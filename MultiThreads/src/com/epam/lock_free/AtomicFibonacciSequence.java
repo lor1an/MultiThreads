@@ -18,10 +18,12 @@ public class AtomicFibonacciSequence {
 
         BigInteger previous;
         BigInteger current;
+        BigInteger plus = BigInteger.ONE;
 
         FibonacciEntry() {
-            previous = BigInteger.ZERO;
-            current = BigInteger.ONE;
+            previous = BigInteger.ONE;
+            current = BigInteger.ZERO;
+
         }
 
         FibonacciEntry(BigInteger previous, BigInteger current) {
@@ -30,7 +32,7 @@ public class AtomicFibonacciSequence {
         }
 
         FibonacciEntry nextEntry() {
-            return new FibonacciEntry(current, current.add(previous));
+            return new FibonacciEntry(current, current.add(plus));
         }
     }
 

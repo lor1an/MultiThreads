@@ -11,7 +11,7 @@ import java.math.BigInteger;
  *
  * @author Anatolii_Hlazkov
  */
-public class BinarySequence {
+public class SynchronizedBinarySequence {
 
     private static final BigInteger TWO = new BigInteger("2");
     private static BigInteger current = new BigInteger("1");

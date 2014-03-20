@@ -23,15 +23,15 @@ public class Runner {
 //            thread.start();
 //        }
 
-        final AtomicFibonacciSequence sequence = new AtomicFibonacciSequence();
+        final AtomicBinarySequence sequence = new AtomicBinarySequence();
         final CountDownLatch countDownLatch = new CountDownLatch(1);
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 5; i++) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
                     try {
                         countDownLatch.await();
-                        for (int i = 0; i < 10; i++) {
+                        for (int i = 0; i < 5; i++) {
                             System.out.println(Thread.currentThread().getName()
                                     + ": " + sequence.next());
                             Thread.sleep(10);
