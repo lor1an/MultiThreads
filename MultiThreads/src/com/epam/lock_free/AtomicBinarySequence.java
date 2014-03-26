@@ -18,12 +18,12 @@ public class AtomicBinarySequence {
             current = BigInteger.ONE;
         }
 
-        BinaryEntry(BigInteger previous, BigInteger current) {
+        BinaryEntry(BigInteger current) {
             this.current = current;
         }
 
         BinaryEntry nextEntry() {
-            return new BinaryEntry(current, current.multiply(TWO));
+            return new BinaryEntry(current.multiply(TWO));
         }
     }
 

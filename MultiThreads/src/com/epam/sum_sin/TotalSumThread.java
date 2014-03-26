@@ -8,7 +8,7 @@ package com.epam.sum_sin;
  *
  * @author lor1an
  */
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,7 +34,6 @@ public class TotalSumThread {
 
     private void run(int N) {
 
-
         if (threadsNumberYouWant > 2 * N + 1) {
             System.out.println("Number of threads you want bigger than number of terms in the sum!");
             threadsNumberYouWant = 2 * N + 1;
@@ -44,22 +43,28 @@ public class TotalSumThread {
         int parts = (2 * N + 1) / threadsNumberYouWant;
         int endValue, startValue = -N;
 
-        LinkedList<PartSumThread> thread = new LinkedList<>();
+        ArrayList<PartSumThread> thread = new ArrayList<>();
         for (int i = 0; i < threadsNumberYouWant; i++) {
             if (i < threadsNumberYouWant - 1) {
                 endValue = startValue + parts;
             } else {
                 endValue = N + 1;
             }
-            thread.add(new PartSumThread(startValue, endValue - 1, this));
+            thread.add(
+                    new PartSumThread(startValue, endValue - 1, new Function<Integer>() {
+                        public Double function(Integer argument) {
+                            return Math.sin(argument);
+                        }
+                    })
+            );
             thread.get(i).start();
             startValue = endValue;
         }
 
-        
         for (int j = 0; j < thread.size(); j++) {
             try {
                 thread.get(j).join();
+                totalSum += thread.get(j).threadSum;
             } catch (InterruptedException ex) {
                 Logger.getLogger(TotalSumThread.class.getName()).log(Level.SEVERE, null, ex);
             }
