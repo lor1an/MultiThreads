@@ -8,15 +8,15 @@ package com.epam.sum_sin;
  *
  * @author lor1an
  */
-public class PartSumThread extends Thread {
+public class ThreadSum extends Thread {
 
     private double resultOfThreadSum = 0;
     private int startArgumentBoundary, finishArgumentBoundary;
 
-    private Function<Integer> f;
+    private final Function<Integer> f;
     public double threadSum;
 
-    public PartSumThread(int startIndex, int endIndex, Function f) {
+    public ThreadSum(int startIndex, int endIndex, Function f) {
         startArgumentBoundary = startIndex;
         finishArgumentBoundary = endIndex;
         this.f = f;

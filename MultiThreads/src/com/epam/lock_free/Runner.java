@@ -16,7 +16,7 @@ public class Runner {
 
     public static void main(String[] args) {
 
-        final AtomicBinarySequence sequence = new AtomicBinarySequence();
+        final BinarySequence sequence = new BinarySequence();
         for (int i = 0; i < 5; i++) {
             new Thread(new Runnable() {
                 @Override

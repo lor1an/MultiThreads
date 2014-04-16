@@ -4,13 +4,12 @@ package com.epam.sum_sin;
  *
  * @author Anatolii_Hlazkov
  */
-import java.io.IOException;
 import java.util.concurrent.Callable;
 
 public class CallableSum implements Callable<Double> {
 
     private final int startArgumentBoundary, finishArgumentBoundary;
-    private Function<Integer> f;
+    private final Function<Integer> f;
 
     public CallableSum(int startIndex, int endIndex, Function f) {
         startArgumentBoundary = startIndex;
@@ -24,8 +23,9 @@ public class CallableSum implements Callable<Double> {
         int argument = startArgumentBoundary;
         while (argument <= finishArgumentBoundary) {
             threadSum += f.function(argument);
-            argument++;
+            argument += 1;
         }
         return threadSum;
     }
+
 }

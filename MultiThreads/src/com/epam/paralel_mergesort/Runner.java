@@ -13,15 +13,20 @@ import static com.epam.paralel_mergesort.ParalelSort.parallelMergeSort;
  */
 public class Runner {
 
+    public final static int LENGTH = 100000;
+    public final static int NUMBER_OF_THREADS = 4;
+
     public static void main(String[] args) {
-        int LENGTH = 1000;
 
         int[] a = createRandomArray(LENGTH);
-        parallelMergeSort(a, 4);
-        for (int i = 0; i < a.length; i++) {
-            System.out.println("a[" + i + "]= " + a[i]);
+        long startTime = System.currentTimeMillis();
+        parallelMergeSort(a, NUMBER_OF_THREADS);
+        System.out.println("Sort time: " + (System.currentTimeMillis() - startTime)
+                + " ms");
 
-        }
-
+//        for (int i = 0; i < a.length; i++) {
+//            System.out.println("a[" + i + "]= " + a[i]);
+//
+//        }
     }
 }

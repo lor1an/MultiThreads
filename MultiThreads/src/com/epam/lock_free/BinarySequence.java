@@ -7,7 +7,23 @@ import java.util.concurrent.atomic.AtomicReference;
  *
  * @author Anatolii_Hlazkov
  */
-public class AtomicBinarySequence {
+public class BinarySequence {
+
+    private final AtomicReference<BinaryEntry> entry = new AtomicReference<>();
+
+    public BinarySequence() {
+        entry.set(new BinaryEntry());
+    }
+
+    public BigInteger next() {
+        for (;;) {
+            BinaryEntry binEntry = entry.get();
+            BinaryEntry nextEntry = binEntry.nextEntry();
+            if (entry.compareAndSet(binEntry, nextEntry)) {
+                return nextEntry.current;
+            }
+        }
+    }
 
     private static class BinaryEntry {
 
@@ -24,22 +40,6 @@ public class AtomicBinarySequence {
 
         BinaryEntry nextEntry() {
             return new BinaryEntry(current.multiply(TWO));
-        }
-    }
-
-    private final AtomicReference<BinaryEntry> entryHolder = new AtomicReference<>();
-
-    public AtomicBinarySequence() {
-        entryHolder.set(new BinaryEntry());
-    }
-
-    public BigInteger next() {
-        for (;;) {
-            BinaryEntry entry = entryHolder.get();
-            BinaryEntry nextEntry = entry.nextEntry();
-            if (entryHolder.compareAndSet(entry, nextEntry)) {
-                return nextEntry.current;
-            }
         }
     }
 
