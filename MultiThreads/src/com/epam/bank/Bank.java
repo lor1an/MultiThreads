@@ -7,6 +7,7 @@ package com.epam.bank;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  *
@@ -24,55 +25,51 @@ public class Bank {
         this.accounts = accounts;
     }
 
-    public void transfer(Account from, Account to, int amount) {
+    @SuppressWarnings("empty-statement")
+    public void transh(Account from, Account to, int amount) {
         boolean flag = (from.ID >= to.ID);
         if (flag) {
-            if (from.getLock().tryLock()) {
-                try {
-                    if (to.getLock().tryLock()) {
-                        try {
-                            from.withdraw(amount);
-                            to.deposit(amount);
-                        } finally {
-                            to.getLock().unlock();
-                        }
-                    } else {
-                        from.getLock().unlock();
-                        transfer(from, to, amount);
+            while (!_transfer(from, to, amount));
+        } else {
+            while (!_transfer(to, from, -amount));
+        }
+    }
+
+    private boolean _transfer(Account from, Account to, int amount) {
+        if (from.getLock().tryLock()) {
+            try {
+                if (to.getLock().tryLock()) {
+                    try {
+                        from.changeBalance(-amount);
+                        to.changeBalance(amount);
+                        return true;
+                    } finally {
+                        to.getLock().unlock();
                     }
-                } finally {
-                    from.getLock().unlock();
                 }
-            } else {
-                transfer(from, to, amount);
+            } finally {
+                from.getLock().unlock();
             }
         } else {
-            if (to.getLock().tryLock()) {
-                try {
-                    if (from.getLock().tryLock()) {
-                        try {
-                            from.withdraw(amount);
-                            to.deposit(amount);
-                        } finally {
-                            from.getLock().unlock();
-                        }
-                    } else {
-                        from.getLock().unlock();
-                        transfer(from, to, amount);
-                    }
-                } finally {
-                    to.getLock().unlock();
-                }
-            } else {
-                transfer(from, to, amount);
-            }
+            return false;
         }
+        return false;
     }
 
     public int countAllMoney() {
         int allMoney = 0;
         for (Account account : accounts) {
-            allMoney += account.getBalance();
+            while (true) {
+                if (!account.getLock().isLocked()) {
+                    try {
+                        account.getLock().lock();
+                        allMoney += account.getBalance();
+                        break;
+                    } finally {
+                        account.getLock().unlock();
+                    }
+                }
+            }
         }
         return allMoney;
     }

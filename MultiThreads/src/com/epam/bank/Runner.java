@@ -25,7 +25,9 @@ public class Runner {
         from = accs.get((rand.nextInt(accs.size() - 1)));
         to = accs.get((rand.nextInt(accs.size() - 1)));
         int money = (int) (rand.nextDouble() * from.getBalance());
-        bank.transfer(from, to, money);
+        bank.transh(from, to, money);
+        System.out.println("All money when transfers:  " + bank.countAllMoney());
+
     }
 
     public static void main(String[] args) {
@@ -41,17 +43,21 @@ public class Runner {
         System.out.println("All money before transfers: " + bank.countAllMoney());
 
         ExecutorService service = Executors.newFixedThreadPool(10000);
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < 1000; i++) {
             service.submit(new Runnable() {
                 @Override
                 public void run() {
                     bankTransfers(bank);
+
                 }
             });
         }
-        service.shutdown();   
-
-        System.out.println("All money after transfers:  " + bank.countAllMoney());
-
+        service.shutdown();
+        while (true) {
+            if (service.isTerminated()) {
+                System.out.println("--------------------------------:  " + bank.countAllMoney());
+                break;
+            }
+        }
     }
 }

@@ -16,33 +16,37 @@ public class Account {
 
     public final int ID;
     private int balance;
-    private Lock lock = new ReentrantLock();
+    private final ReentrantLock lock = new ReentrantLock(true);
 
     public Account(int ballance, int id) {
         if (ballance < 0) {
             throw new IllegalArgumentException();
         }
+
         ID = id;
         this.balance = ballance;
     }
 
-    public Lock getLock() {
+    public ReentrantLock getLock() {
         return lock;
     }
 
-    public void setLock(Lock lock) {
-        this.lock = lock;
+    void changeBalance(int money) {
+        balance += money;
     }
 
     public void withdraw(int money) {
-        if (balance < money) {
+        if (balance < money || money < 0) {
             throw new IllegalArgumentException();
         }
-        balance -= money;
+        changeBalance(-money);
     }
 
     public void deposit(int money) {
-        balance += money;
+        if (money < 0) {
+            throw new IllegalArgumentException();
+        }
+        changeBalance(money);
     }
 
     public int getBalance() {
