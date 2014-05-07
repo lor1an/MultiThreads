@@ -22,12 +22,9 @@ public class Consumer implements Runnable {
     @Override
     public void run() {
         while (true) {
-            int elementGet;
             try {
-                System.out.println("Get"+Thread.currentThread().getName());
-                elementGet = circularBuffer.get();
-                System.out.println("Success get : " + elementGet);
-                        } catch (InterruptedException ex) {
+                circularBuffer.get();
+            } catch (InterruptedException ex) {
                 Logger.getLogger(Consumer.class.getName()).log(Level.SEVERE, null, ex);
             }
         }

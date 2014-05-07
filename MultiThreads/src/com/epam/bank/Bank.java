@@ -50,8 +50,6 @@ public class Bank {
             } finally {
                 from.getLock().unlock();
             }
-        } else {
-            return false;
         }
         return false;
     }

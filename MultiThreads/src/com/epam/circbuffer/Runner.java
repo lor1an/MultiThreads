@@ -16,16 +16,17 @@ public class Runner {
     public static int SIZE_OF_BUFFER = 5;
 
     public static void main(String args[]) throws InterruptedException {
-        CircularBuffer circularBuffer = new CircularBuffer(SIZE_OF_BUFFER);
+        CircularBuffer circularBuffer = new SynchronizedCircularBuffer();
 
         List<Thread> threadAdd = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
             threadAdd.add(new Thread(new Producer(circularBuffer)));
             threadAdd.get(i).start();
+           
         }
 
         List<Thread> threadGet = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 2; i++) {
             threadGet.add(new Thread(new Consumer(circularBuffer)));
             threadGet.get(i).start();
         }

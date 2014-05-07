@@ -8,13 +8,15 @@ package com.epam.circbuffer;
  *
  * @author lor1an
  */
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Producer implements Runnable {
 
-    volatile int elementToAdd;
+    int elementToAdd;
     private CircularBuffer circularBuffer;
+    private final Random rand = new Random();
 
     public Producer(CircularBuffer circularBuffer) {
         this.circularBuffer = circularBuffer;
@@ -24,15 +26,12 @@ public class Producer implements Runnable {
     public void run() {
         while (true) {
             try {
-                System.out.println("Write" + Thread.currentThread().getName());
-               
-                circularBuffer.addElementIntoBuffer(elementToAdd);
-                System.out.println("Success write : " + elementToAdd);
-                System.out.println(circularBuffer.toString());
-                elementToAdd++;
+                circularBuffer.set(elementToAdd);
+                Thread.sleep(10);
             } catch (InterruptedException ex) {
                 Logger.getLogger(Producer.class.getName()).log(Level.SEVERE, null, ex);
             }
+            elementToAdd = rand.nextInt(1000);
         }
     }
 }

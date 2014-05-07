@@ -1,55 +1,45 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.epam.circbuffer;
 
-import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  *
- * @author lor1an
+ * @author Anatolii_Hlazkov
  */
-public class CircularBuffer {
+public abstract class CircularBuffer {
 
-    volatile Integer elementsOfBuffer[];
-    volatile static int head;
-    volatile static int tail;
+    protected Integer[] buffer = {-1, -1, -1, -1, -1};
+    protected int writeIndex = 0;
+    protected int readIndex = 0;
+    protected int occupiedBuffers = 0;
 
-    public CircularBuffer(Integer sizeOfBuffer) {
-        elementsOfBuffer = new Integer[sizeOfBuffer];
-        head = 0;
-        tail = 0;
-    }
+    abstract void set(Integer value) throws InterruptedException;
 
-    public synchronized boolean addElementIntoBuffer(Integer elementToAdd) throws InterruptedException {
-        while (elementsOfBuffer[head] != null && tail == 0) {
-            wait();
+    abstract Integer get() throws InterruptedException;
+
+    public void displayState(String operation) {
+        System.out.printf("%s%s%d)\n%s", operation,
+                " (buffers occupied: ", occupiedBuffers, "buffers:  ");
+        for (int value : buffer) {
+            System.out.printf(" %2d  ", value);
         }
-        elementsOfBuffer[tail++] = elementToAdd;
-        if (tail == elementsOfBuffer.length) {
-            tail = 0;
+        System.out.print("\n         ");
+        for (int i = 0; i < buffer.length; i++) {
+            System.out.print("---- ");
         }
-        notifyAll();
-        return true;
-    }
 
-    public synchronized Integer get() throws InterruptedException {
-        while (elementsOfBuffer[head] == null) {
-            wait();
+        System.out.print("\n         ");
+        for (int i = 0; i < buffer.length; i++) {
+            if (i == writeIndex && i == readIndex) {
+                System.out.print(" WR");
+            } else if (i == writeIndex) {
+                System.out.print(" W   ");
+            } else if (i == readIndex) {
+                System.out.print("  R  ");
+            } else {
+                System.out.print("     ");
+            }
         }
-        int value = elementsOfBuffer[head];
-        elementsOfBuffer[head] = null;
-        head++;
-        if (head == elementsOfBuffer.length) {
-            head = 0;
-        }
-        notifyAll();
-        return value;
-    }
-
-    @Override
-    public String toString() {
-        return Arrays.toString(elementsOfBuffer);
+        System.out.println("\n");
     }
 }
